@@ -9,6 +9,9 @@ build: 					## Build project images
 	@$(DOCKER_COMPOSE) pull --parallel --quiet --ignore-pull-failures 2> /dev/null
 	$(DOCKER_COMPOSE) build --pull
 
+clean: kill 			## Kill project and remove untracked files
+	git clean -ffdX --exclude="!.idea/"
+
 install: build start 	## Initialize and start project
 
 kill: 					## Kill and removes containers and volumes
@@ -21,7 +24,7 @@ start: 					## Start project containers
 stop: 					## Stop project containers
 	$(DOCKER_COMPOSE) stop
 
-.PHONY: build install kill start stop
+.PHONY: build clean install kill start stop
 
 .DEFAULT_GOAL := help
 
