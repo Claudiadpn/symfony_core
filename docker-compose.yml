@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    volumes:
+      - app_sources:/app
+      - app_cache:/app/var/cache
+
+volumes:
+  app_sources:
+  app_cache:
