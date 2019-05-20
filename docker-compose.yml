@@ -6,6 +6,12 @@ services:
     volumes:
       - app_sources:/app
       - app_cache:/app/var/cache
+  web:
+    build: ./docker/services/web
+    depends_on:
+      - app
+    volumes:
+      - app_sources:/app
 
 volumes:
   app_sources:
