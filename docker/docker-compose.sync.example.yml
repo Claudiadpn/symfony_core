@@ -10,7 +10,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - symfony4_core_web-sync:/app/public
+      - symfony4_core_app-sync:/app
 
 volumes:
   symfony4_core_app-sync:
