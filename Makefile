@@ -1,4 +1,5 @@
-DOCKER_COMPOSE = docker-compose
+DOCKER_COMPOSE 	= docker-compose
+PHP 			= $(DOCKER_COMPOSE) exec -u www-data app php
 
 ##
 ## Docker stack
@@ -31,11 +32,12 @@ kill: 												## Kill and removes containers and volumes
 		docker-sync clean; \
 	fi
 
-start: 												## Start project containers
+start: docker-compose.override.yml					## Start project containers
 	@if [ -f "docker-sync.yml" ]; then \
 		docker-sync start; \
 	fi
 	$(DOCKER_COMPOSE) up -d --force-recreate
+	@$(PHP) -r 'echo "Waiting for initial installation ..."; for(;;) { if (false === file_exists("/tmp/DOING_COMPOSER_INSTALL")) { echo " Ready !\n"; break; }}'
 
 stop: 												## Stop project containers
 	$(DOCKER_COMPOSE) stop
