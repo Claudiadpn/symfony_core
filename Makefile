@@ -5,24 +5,43 @@ DOCKER_COMPOSE = docker-compose
 ## -------
 ##
 
-build: 					## Build project images
+build: 												## Build project images
 	@$(DOCKER_COMPOSE) pull --parallel --quiet --ignore-pull-failures 2> /dev/null
 	$(DOCKER_COMPOSE) build --pull
 
-clean: kill 			## Kill project and remove untracked files
+clean: kill 										## Kill project and remove untracked files
 	git clean -ffdX --exclude="!.idea/"
 
-install: build start 	## Initialize and start project
+docker-sync.yml:
+	cp docker/docker-sync.example.yml docker-sync.yml
 
-kill: 					## Kill and removes containers and volumes
+docker-compose.override.yml:
+	@if [ -f "docker-sync.yml" ]; then \
+		cp docker/docker-compose.sync.example.yml docker-compose.override.yml; \
+	else \
+		cp docker/docker-compose.override.example.yml docker-compose.override.yml; \
+	fi
+
+install: docker-compose.override.yml build start 	## Initialize and start project
+
+kill: 												## Kill and removes containers and volumes
 	$(DOCKER_COMPOSE) kill
 	$(DOCKER_COMPOSE) down -v --remove-orphans
+	@if [ -f "docker-sync.yml" ]; then \
+		docker-sync clean; \
+	fi
 
-start: 					## Start project containers
+start: 												## Start project containers
+	@if [ -f "docker-sync.yml" ]; then \
+		docker-sync start; \
+	fi
 	$(DOCKER_COMPOSE) up -d --force-recreate
 
-stop: 					## Stop project containers
+stop: 												## Stop project containers
 	$(DOCKER_COMPOSE) stop
+	@if [ -f "docker-sync.yml" ]; then \
+		docker-sync stop; \
+	fi
 
 .PHONY: build clean install kill start stop
 
