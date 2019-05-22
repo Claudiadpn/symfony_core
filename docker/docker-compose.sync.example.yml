@@ -9,6 +9,7 @@ services:
   web:
     ports:
       - 8080:80
+      - 8081:443
     volumes:
       - symfony4_core_app-sync:/app
 
