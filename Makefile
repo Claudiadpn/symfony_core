@@ -54,7 +54,7 @@ up: docker-compose.override.yml						## Start project containers
 	@if [ -f "docker/docker-sync.yml" ]; then \
 		docker-sync start -c docker/docker-sync.yml; \
 	fi
-	$(DOCKER_COMPOSE) up -d --force-recreate
+	@$(DOCKER_COMPOSE) up -d --force-recreate
 	@$(PHP) -r 'echo "Waiting for initial installation ..."; for(;;) { if (false === file_exists("/tmp/DOING_COMPOSER_INSTALL")) { echo " Ready !\n"; break; }}'
 
 .PHONY: build clean install down up stop
