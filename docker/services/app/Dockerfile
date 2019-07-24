@@ -27,7 +27,7 @@ USER        root
 VOLUME      /app
 WORKDIR     /app
 
-ENV         APP_ENV=prod
+ENV         APP_ENV=dev
 
 ENTRYPOINT  ["/build/entrypoint.sh"]
 CMD         ["php-fpm"]

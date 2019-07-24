@@ -1,6 +1,6 @@
 ###> Docker ###
-/docker-compose.override.yml
-/docker-sync.yml
+/docker/docker-compose.override.yml
+/docker/docker-sync.yml
 ###< Docker ###
 
 ###> symfony/framework-bundle ###

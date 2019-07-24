@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-COMPOSER_FLAGS="--no-dev --optimize-autoloader --no-progress --prefer-dist --no-suggest"
-if [[ ${APP_ENV:="prod"} != "prod" ]]; then
-    COMPOSER_FLAGS="--no-progress --prefer-dist --profile --no-suggest"
+COMPOSER_FLAGS="--no-progress --prefer-dist --profile --no-suggest"
+if [[ ${APP_ENV:="dev"} == "prod" ]]; then
+    COMPOSER_FLAGS="--no-dev --optimize-autoloader --no-progress --prefer-dist --no-suggest"
 fi
 
 touch /tmp/DOING_COMPOSER_INSTALL

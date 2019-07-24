@@ -2,13 +2,11 @@ version: "3"
 
 services:
   app:
-    environment:
-      APP_ENV: dev
     volumes:
-      - .:/app
+      - ..:/app
   web:
     ports:
       - 8080:80
       - 8081:443
     volumes:
-      - ./public:/app/public
+      - ../public:/app/public

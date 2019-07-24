@@ -9,7 +9,7 @@ RUN         apk add --no-cache \
 RUN         usermod -u 1000 nginx && \
             groupmod -g 1000 nginx
 
-COPY        ./conf.d /etc/nginx/conf.d
+COPY        ./docker/services/web/conf.d /etc/nginx/conf.d
 
 RUN         mkdir -p /etc/nginx/certs
 RUN         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
