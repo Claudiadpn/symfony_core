@@ -1,9 +1,7 @@
-COMPOSE_PROJECT_NAME 	= symfony_core
-
-DOCKER_COMPOSE 			= docker-compose -f docker/docker-compose.yml -f docker/docker-compose.override.yml
-PHP 					= $(DOCKER_COMPOSE) exec -u www-data app php -d memory_limit=-1
-COMPOSER 				= $(PHP) /usr/bin/composer
-CONSOLE 				= $(PHP) bin/console --no-interaction
+DOCKER_COMPOSE 	= docker-compose -f docker/docker-compose.yml -f docker/docker-compose.override.yml
+PHP 			= $(DOCKER_COMPOSE) exec -u www-data app php -d memory_limit=-1
+COMPOSER 		= $(PHP) /usr/bin/composer
+CONSOLE 		= $(PHP) bin/console --no-interaction
 
 ##
 ## Docker stack
