@@ -15,6 +15,8 @@ COPY        --chown=www-data:www-data . /app
 RUN         mkdir -p /build
 COPY        ./docker/services/app /build
 
+RUN         docker-php-ext-install pdo_mysql
+
 ENV         COMPOSER_HOME=/var/lib/composer
 RUN         mkdir -p $COMPOSER_HOME
 RUN         chown -R www-data:www-data $COMPOSER_HOME

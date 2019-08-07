@@ -16,7 +16,19 @@ services:
       - app
     volumes:
       - app_sources:/app
+  database:
+    build:
+      context: ..
+      dockerfile: ./docker/services/database/Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=5ecr3t
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - app_database:/var/lib/mysql
 
 volumes:
   app_sources:
   app_cache:
+  app_database:
