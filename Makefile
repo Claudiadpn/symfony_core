@@ -100,6 +100,12 @@ schema:
 check-mapping: 										## Check if ORM mapping files are correct
 	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app php -d memory_limit=-1 bin/console doctrine:schema:validate --skip-sync
 
+create_test_env:
+	@$(DOCKER_COMPOSE) run --rm database sh -c 'mysql -hdatabase -uroot -p$${MYSQL_ROOT_PASSWORD} -e "DROP DATABASE IF EXISTS $${MYSQL_DATABASE}_test; CREATE DATABASE $${MYSQL_DATABASE}_test; GRANT ALL ON $${MYSQL_DATABASE}_test.* TO \"$${MYSQL_USER}\""'
+	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app sh -c '\
+		php -d memory_limit=-1 bin/console --no-interaction doctrine:migrations:migrate --allow-no-migration &&\
+		php -d memory_limit=-1 bin/console --no-interaction doctrine:fixtures:load --append'
+
 lint-twig:
 	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app php -d memory_limit=-1 bin/console lint:twig resources/templates/
 
@@ -116,9 +122,9 @@ phpstan: 											## Run phpstan static code analysis
 		php -d memory_limit=-1 vendor/bin/phpstan analyse -c config/.phpstan.neon --level 6 src/ &&\
 		php -d memory_limit=-1 vendor/bin/phpstan analyse -c config/.phpstan.neon --level 1 tests/'
 
-phpunit: 											## Run phpunit tests suite
+phpunit: create_test_env							## Run phpunit tests suite
 	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app php -d memory_limit=-1 vendor/bin/phpunit -c config/phpunit.xml.dist --do-not-cache-result
 
-tests: lints phpcs phpstan phpunit 						## Run full QA & tests tools
+tests: lints phpcs phpstan phpunit 					## Run full QA & tests tools
 
-.PHONY: check-mapping lint-twig lint-yaml lints phpcs phpstan phpunit tests
+.PHONY: check-mapping create_test_env lint-twig lint-yaml lints phpcs phpstan phpunit tests
