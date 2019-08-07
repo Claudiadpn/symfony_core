@@ -55,7 +55,7 @@ up: docker-compose.override.yml						## Start project containers
 	@$(DOCKER_COMPOSE) up -d --force-recreate
 	@$(PHP) -r 'echo "Waiting for initial installation ..."; for(;;) { if (false === file_exists("/tmp/DOING_COMPOSER_INSTALL")) { echo " Ready !\n"; break; }}'
 
-.PHONY: build clean install down up stop
+.PHONY: build clean docker-compose docker-sync down install stop up
 
 .DEFAULT_GOAL := help
 
@@ -78,12 +78,27 @@ composer: 											## Shortcut to use Composer within project app container (e
 console: docker-compose.override.yml 				## Execute command in Symfony console (ex : make console c="ca:cl")
 	@$(CONSOLE) ${c}
 
-.PHONY: cache
+database: schema migrate
+
+migrate: 											## Execute migrations on database
+	@$(CONSOLE) --no-interaction doctrine:migrations:migrate --allow-no-migration
+
+migration: 											## Generate a new migration based on diff between mapping info and current database
+	@$(CONSOLE) doctrine:migrations:diff
+
+schema:
+	@$(CONSOLE) doctrine:database:drop --force
+	@$(CONSOLE) doctrine:database:create
+
+.PHONY: cache composer console database migrate migration schema
 
 ##
 ## Tests & QA
 ## -------
 ##
+
+check-mapping: 										## Check if ORM mapping files are correct
+	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app php -d memory_limit=-1 bin/console doctrine:schema:validate --skip-sync
 
 lint-twig:
 	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app php -d memory_limit=-1 bin/console lint:twig resources/templates/
@@ -106,4 +121,4 @@ phpunit: 											## Run phpunit tests suite
 
 tests: lints phpcs phpstan phpunit 						## Run full QA & tests tools
 
-.PHONY: lint-twig lint-yaml lints phpcs phpstan phpunit tests
+.PHONY: check-mapping lint-twig lint-yaml lints phpcs phpstan phpunit tests
