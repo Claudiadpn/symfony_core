@@ -2,7 +2,6 @@ DOCKER_COMPOSE 	= docker-compose -f docker/docker-compose.yml -f docker/docker-c
 PHP 			= $(DOCKER_COMPOSE) exec -u www-data app php -d memory_limit=-1
 COMPOSER 		= $(PHP) /usr/bin/composer
 CONSOLE 		= $(PHP) bin/console --no-interaction
-
 ##
 ## Docker stack
 ## -------
@@ -27,10 +26,12 @@ docker-sync.yml:
 	cp docker/compose/docker-sync.example.yml docker/docker-sync.yml
 
 docker-compose.override.yml:
-	@if [ -f "docker/docker-sync.yml" ]; then \
-		cp docker/compose/docker-compose.sync.example.yml docker/docker-compose.override.yml; \
-	else \
-		cp docker/compose/docker-compose.override.example.yml docker/docker-compose.override.yml; \
+	@if [ ! -f "docker/docker-compose.override.yml" ]; then \
+		if [ -f "docker/docker-sync.yml" ]; then \
+			cp docker/compose/docker-compose.sync.example.yml docker/docker-compose.override.yml; \
+		else \
+			cp docker/compose/docker-compose.override.example.yml docker/docker-compose.override.yml; \
+		fi \
 	fi
 
 down: docker-compose.override.yml 					## Kill and removes containers and volumes
