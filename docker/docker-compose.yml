@@ -27,6 +27,16 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
     volumes:
       - app_database:/var/lib/mysql
+  node:
+    build:
+      context: ..
+      dockerfile: ./docker/services/node/Dockerfile
+    command: ["yarn", "run", "build"]
+    depends_on:
+      - app
+    user: node
+    volumes:
+      - app_sources:/app
 
 volumes:
   app_sources:

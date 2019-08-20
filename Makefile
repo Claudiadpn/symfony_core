@@ -2,6 +2,8 @@ DOCKER_COMPOSE 	= docker-compose -f docker/docker-compose.yml -f docker/docker-c
 PHP 			= $(DOCKER_COMPOSE) exec -u www-data app php -d memory_limit=-1
 COMPOSER 		= $(PHP) /usr/bin/composer
 CONSOLE 		= $(PHP) bin/console --no-interaction
+YARN 			= $(DOCKER_COMPOSE) run --rm -u node node yarn
+
 ##
 ## Docker stack
 ## -------
@@ -69,7 +71,13 @@ help:
 ## -------
 ##
 
-cache: docker-compose.override.yml
+assets: docker-compose.override.yml 				## Compile frontend assets
+	@$(DOCKER_COMPOSE) run --rm -u node node
+
+assets-prod: docker-compose.override.yml 			## Compile frontend assets in production mode
+	@$(DOCKER_COMPOSE) run --rm -u node node yarn run build:production
+
+cache: docker-compose.override.yml 					## Reset app cache
 	@$(CONSOLE) ca:cl
 	@$(CONSOLE) ca:wa
 
@@ -91,7 +99,10 @@ schema:
 	@$(CONSOLE) doctrine:database:drop --force
 	@$(CONSOLE) doctrine:database:create
 
-.PHONY: cache composer console database migrate migration schema
+yarn:
+	@$(YARN) ${c}
+
+.PHONY: assets cache composer console database migrate migration schema yarn
 
 ##
 ## Tests & QA

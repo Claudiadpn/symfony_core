@@ -10,3 +10,6 @@ services:
       - 8081:443
     volumes:
       - ../public:/app/public
+  node:
+    volumes:
+      - ..:/app

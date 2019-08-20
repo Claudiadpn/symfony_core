@@ -30,3 +30,8 @@
 .phpunit
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+###> Assets ###
+public/dist/*
+!public/dist/.gitkeep
+###< Assets ###
