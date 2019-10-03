@@ -40,6 +40,16 @@
                     use: [
                         { loader: 'file-loader', options: { name: `img/${config.cacheBusting}.[ext]` } }
                     ]
+                },
+                {
+                    test: /webfonts\/(.+).(eot|svg|woff|woff2|ttf)/,
+                    use: {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'fonts/[name].[ext]',
+                            publicPath: '/dist'
+                        }
+                    }
                 }
             ]
         },

@@ -1,7 +1,7 @@
 DOCKER_COMPOSE 	= docker-compose -f docker/docker-compose.yml -f docker/docker-compose.override.yml
 PHP 			= $(DOCKER_COMPOSE) exec -u www-data app php -d memory_limit=-1
 COMPOSER 		= $(PHP) /usr/bin/composer
-CONSOLE 		= $(PHP) bin/console --no-interaction
+CONSOLE 		= $(PHP) bin/console
 YARN 			= $(DOCKER_COMPOSE) run --rm -u node node yarn
 
 ##
@@ -43,7 +43,7 @@ down: docker-compose.override.yml 					## Kill and removes containers and volume
 		docker-sync clean -c docker/docker-sync.yml; \
 	fi
 
-install: build up	 								## Initialize and start project
+install: build up database							## Initialize and start project
 
 stop: docker-compose.override.yml 					## Stop project containers
 	$(DOCKER_COMPOSE) stop
@@ -134,9 +134,9 @@ phpstan: 											## Run phpstan static code analysis
 		php -d memory_limit=-1 vendor/bin/phpstan analyse -c config/.phpstan.neon --level 6 src/ &&\
 		php -d memory_limit=-1 vendor/bin/phpstan analyse -c config/.phpstan.neon --level 1 tests/'
 
-phpunit: create_test_env							## Run phpunit tests suite
-	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app php -d memory_limit=-1 vendor/bin/phpunit -c config/phpunit.xml.dist --do-not-cache-result
+phpunit: 											## Run phpunit tests suite
+	@$(DOCKER_COMPOSE) run --rm -e APP_ENV=test app php -d memory_limit=-1 vendor/bin/phpunit -c config/phpunit.xml.dist
 
-tests: lints phpcs phpstan phpunit 					## Run full QA & tests tools
+tests: lints phpcs phpstan create_test_env phpunit 	## Run full QA & tests tools
 
 .PHONY: check-mapping create_test_env lint-twig lint-yaml lints phpcs phpstan phpunit tests

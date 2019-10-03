@@ -13,6 +13,22 @@ services:
   node:
     volumes:
       - symfony_core_app-sync:/app
+  phpmyadmin:
+    build:
+      context: ..
+      dockerfile: ./docker/services/phpmyadmin/Dockerfile
+    depends_on:
+      - database
+    environment:
+      - PMA_ARBITRARY=1
+    ports:
+      - 8082:80
+  maildev:
+    build:
+      context: ..
+      dockerfile: ./docker/services/maildev/Dockerfile
+    ports:
+      - 8083:80
 
 volumes:
   symfony_core_app-sync:
