@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Dto\Security;
 
+use App\Form\Dto\Common\PasswordTrait;
 use App\Form\Dto\DataTransferObjectInterface;
 use App\Validator\Constraint as AppConstraints;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,6 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 final class Registration implements DataTransferObjectInterface
 {
+    use PasswordTrait;
+
     /**
      * @var string
      *
@@ -34,17 +37,6 @@ final class Registration implements DataTransferObjectInterface
      * @Assert\NotBlank()
      */
     public $lastname;
-
-    /**
-     * @var string
-     *
-     * @Assert\NotBlank()
-     * @Assert\Regex(
-     *     pattern="#^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$#",
-     *     message="Passwords must be at least 8 characters long, and have at least one uppercase letter, one lowercase letter, one number and one special character (@$!%*?&)."
-     * )
-     */
-    public $password;
 
     /**
      * @var bool

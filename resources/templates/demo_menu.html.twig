@@ -8,7 +8,10 @@
                         Welcome, {{ app.user.firstname }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="mainMenuDropdown">
-                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" href="{{ absolute_url(url('dashboard_index')) }}">Dashboard</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="dropdown-item" href="{{ absolute_url(url('sonata_admin_dashboard')) }}">Admin</a>
+                        {% endif %}
                         <a class="dropdown-item" href="#" onclick="return document.getElementById('menuFormLogout').submit();">Signout</a>
                     </div>
                 </div>

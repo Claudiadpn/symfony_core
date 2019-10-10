@@ -13,9 +13,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 final class UserFixture extends Fixture implements OrderedFixtureInterface
 {
     private static $USERS_CATALOG = [
-        'user1@example.com' => ['Secret@1', 'Foo', 'Bar', true, false, User::STATUS_ACTIVE],
-        'user2@example.com' => ['Secret@2', 'Bar', 'Baz', true, true, User::STATUS_ACTIVE],
-        'user3@example.com' => ['Secret@3', 'Baz', 'Foo', true, false, User::STATUS_INACTIVE],
+        'user1@example.com' => ['Secret@1', 'Foo', 'Bar', true, false, User::STATUS_ACTIVE, [User::ROLE_USER]],
+        'user2@example.com' => ['Secret@2', 'Bar', 'Baz', true, true, User::STATUS_ACTIVE, [User::ROLE_USER]],
+        'user3@example.com' => ['Secret@3', 'Baz', 'Foo', true, false, User::STATUS_INACTIVE, [User::ROLE_USER]],
+        'user4@example.com' => ['Secret@4', 'Baz', 'Bar', true, false, User::STATUS_LOCKED, [User::ROLE_USER]],
+        'superadmin@example.com' => ['Secret@12', 'Test', 'Admin', true, false, User::STATUS_ACTIVE, [User::ROLE_USER, User::ROLE_ADMIN, User::ROLE_SUPERADMIN]],
+        'admin1@example.com' => ['Secret@12', 'Test', 'Admin', true, false, User::STATUS_ACTIVE, [User::ROLE_USER, User::ROLE_ADMIN]],
     ];
 
     private $userPasswordEncoder;
@@ -29,7 +32,7 @@ final class UserFixture extends Fixture implements OrderedFixtureInterface
     {
         $userCount = 1;
         foreach (self::$USERS_CATALOG as $email => $userData) {
-            list($password, $firstname, $lastname, $isConditionsAccepted, $isOptinCommercial, $status) = $userData;
+            list($password, $firstname, $lastname, $isConditionsAccepted, $isOptinCommercial, $status, $roles) = $userData;
 
             $user = new User();
 
@@ -41,6 +44,7 @@ final class UserFixture extends Fixture implements OrderedFixtureInterface
                 ->setConditionsAccepted($isConditionsAccepted)
                 ->setOptinCommercial($isOptinCommercial)
                 ->setStatus($status)
+                ->setRoles($roles)
             ;
 
             $manager->persist($user);

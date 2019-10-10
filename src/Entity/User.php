@@ -14,7 +14,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
     public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_SUPERADMIN = 'ROLE_SUPERADMIN';
 
+    public const STATUS_LOCKED = -1;
     public const STATUS_INACTIVE = 0;
     public const STATUS_ACTIVE = 1;
 
@@ -94,7 +97,10 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->roles = [User::ROLE_USER];
+        $this->roles = [self::ROLE_USER];
+        $this->optinCommercial = false;
+        $this->conditionsAccepted = false;
+        $this->status = self::STATUS_ACTIVE;
     }
 
     public function getId(): int
@@ -102,7 +108,7 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getFirstname(): string
+    public function getFirstname(): ?string
     {
         return $this->firstname;
     }
@@ -114,7 +120,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getLastname(): string
+    public function getLastname(): ?string
     {
         return $this->lastname;
     }
@@ -126,7 +132,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -138,7 +144,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -177,6 +183,13 @@ class User implements UserInterface
     public function getRoles()
     {
         return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 
     public function getSalt(): ?string

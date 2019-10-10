@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Action\Security;
 
-use App\Entity\User;
+use App\Event\User\UserRegisteredEvent;
 use App\Form\Dto\Security\Registration;
 use App\Form\Type\Security\RegisterType;
 use App\Security\RegistrationHandler;
@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 final class RegisterAction
@@ -24,22 +25,22 @@ final class RegisterAction
 
     private $router;
 
-    private $mailer;
-
     private $registrationHandler;
+
+    private $eventDispatcher;
 
     public function __construct(
         Environment $twig,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         RegistrationHandler $registrationHandler,
-        \Swift_Mailer $mailer
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->twig = $twig;
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->registrationHandler = $registrationHandler;
-        $this->mailer = $mailer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(Request $request, Session $session)
@@ -54,7 +55,7 @@ final class RegisterAction
 
             $user = $this->registrationHandler->handleRegistration($registration);
 
-            $this->sendConfirmationEmail($user);
+            $this->eventDispatcher->dispatch(new UserRegisteredEvent($user));
 
             $session->getFlashBag()->add('success', sprintf('You are now registered. Please check your mailbox "%s" to confirm your email address.', $registration->email));
 
@@ -66,15 +67,5 @@ final class RegisterAction
                 'registerForm' => $registerForm->createView(),
             ])
         );
-    }
-
-    private function sendConfirmationEmail(User $user)
-    {
-        $message = (new \Swift_Message('Registration confirmation'))
-            ->setFrom('noreply@symfony_core.local')
-            ->setTo($user->getEmail())
-            ->setBody($this->twig->render('emails/security/registration.html.twig', ['user' => $user]), 'text/html');
-
-        $this->mailer->send($message);
     }
 }

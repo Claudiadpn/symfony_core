@@ -89,6 +89,9 @@ console: docker-compose.override.yml 				## Execute command in Symfony console (
 
 database: schema migrate
 
+fixtures:
+	@$(CONSOLE) --no-interaction doctrine:fixtures:load --append
+
 migrate: 											## Execute migrations on database
 	@$(CONSOLE) --no-interaction doctrine:migrations:migrate --allow-no-migration
 

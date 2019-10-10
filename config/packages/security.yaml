@@ -16,6 +16,7 @@ security:
     main:
       anonymous: true
       pattern: ^/
+      user_checker: App\Security\UserChecker
       form_login:
         check_path: security_login
         login_path: security_login
@@ -25,5 +26,5 @@ security:
         target: security_login
 
   access_control:
-    # - { path: ^/admin, roles: ROLE_ADMIN }
-    # - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/dashboard, roles: ROLE_USER }
+    - { path: ^/admin, roles: ROLE_ADMIN }

@@ -30,4 +30,32 @@ final class LoginActionTest extends WebTestCase
 
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Welcome, Foo")')->count());
     }
+
+    public function testLoginWithAccountLocked()
+    {
+        $this->client->request(Request::METHOD_GET, '/login');
+
+        $this->client->submitForm('Sign in', [
+            '_username' => 'user4@example.com',
+            '_password' => 'Secret@4',
+        ]);
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Account has expired.")')->count());
+    }
+
+    public function testLoginWithNotExistingAccount()
+    {
+        $this->client->request(Request::METHOD_GET, '/login');
+
+        $this->client->submitForm('Sign in', [
+            '_username' => 'unknown@example.com',
+            '_password' => 'password',
+        ]);
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Invalid credentials.")')->count());
+    }
 }
