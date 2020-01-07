@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractAdminTest extends WebTestCase
 {
+    protected $client;
+
     protected function setUp(): void
     {
         $this->client = static::createClient([], [
@@ -18,8 +20,6 @@ abstract class AbstractAdminTest extends WebTestCase
             'PHP_AUTH_PW' => 'Secret@12',
             'HTTPS' => true,
         ]);
-
-        static::bootKernel();
     }
 
     protected function listAllowed(string $name)
