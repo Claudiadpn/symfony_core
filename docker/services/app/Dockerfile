@@ -1,4 +1,4 @@
-FROM        php:7.2-fpm-alpine
+FROM        php:7.3-fpm-alpine
 MAINTAINER  Arnaud Ponel <arnaud@xpressive.io>
 
 RUN         apk add --no-cache \

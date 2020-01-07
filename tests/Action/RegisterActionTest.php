@@ -10,6 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RegisterActionTest extends WebTestCase
 {
+    protected $client;
+
+    protected function setUp(): void
+    {
+        $this->client = self::createClient();
+    }
+
     public function testRegistrationPage()
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/register');

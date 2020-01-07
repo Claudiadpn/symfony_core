@@ -10,6 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class LoginActionTest extends WebTestCase
 {
+    protected $client;
+
+    protected function setUp(): void
+    {
+        $this->client = self::createClient();
+    }
+
     public function testLoginPage()
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/login');

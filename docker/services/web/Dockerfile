@@ -10,6 +10,7 @@ RUN         usermod -u 1000 nginx && \
             groupmod -g 1000 nginx
 
 COPY        ./docker/services/web/conf.d /etc/nginx/conf.d
+VOLUME      /etc/nginx/conf.d
 
 RUN         mkdir -p /etc/nginx/certs
 RUN         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -20,5 +21,6 @@ RUN         openssl dhparam -out /etc/nginx/certs/server.pem 2048
 
 RUN         mkdir -p /app
 
+EXPOSE      80 443
 VOLUME      /app
 WORKDIR     /app

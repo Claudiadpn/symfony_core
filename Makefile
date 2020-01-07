@@ -102,7 +102,7 @@ schema:
 	@$(CONSOLE) doctrine:database:drop --force
 	@$(CONSOLE) doctrine:database:create
 
-yarn:
+yarn: 												## Shortcut to use Yarn container (ex : make yarn c="add bootstrap")
 	@$(YARN) ${c}
 
 .PHONY: assets cache composer console database migrate migration schema yarn

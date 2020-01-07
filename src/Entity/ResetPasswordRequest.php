@@ -49,9 +49,6 @@ final class ResetPasswordRequest
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
